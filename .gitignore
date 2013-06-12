@@ -1,0 +1,4 @@
+known-vulnerabilities/*
+announce/*
+*swp
+venv/*

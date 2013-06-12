@@ -1,0 +1,4 @@
+
+
+class Advisory
+    def __
