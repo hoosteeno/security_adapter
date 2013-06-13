@@ -13,18 +13,34 @@ for link in advisories.find_all('a'):
         # make_advisory_from_file href
         advisory = BeautifulSoup(open(filename))
         data = {}
-        #data['what_is_this'] = advisory.find('h1').get_text()
-        data['title'] = advisory.find(text="Title:").parent.next_sibling
-        data['impact'] = advisory.find(text="Impact:").parent.next_sibling
-        #TODO make date
-        data['date_s'] = advisory.find(text="Announced:").parent.next_sibling
-        data['reporter'] = advisory.find(text="Reporter:").parent.next_sibling
-        #TODO extract data from products
-        data['products'] = advisory.find(text="Products:").parent.next_sibling
-        #TODO extract data from fixed_in
-        data['fixed_in'] = advisory.find(text="Fixed in:").parent.next_sibling
-        print data
-        
+        data['headline'] = advisory.find('h1').get_text()
+        meta = advisory.find('h1').find_next_sibling('p')
 
-        
+        #TODO make these work
+        #description = advisory.find(text="Description").find_next_sibling('p')
+        #references = advisory.find(text="References").find_next_siblings('p')
+
+        data['title'] = meta.find(text="Title:").parent.next_sibling
+        data['impact'] = meta.find(text="Impact:").parent.next_sibling
+
+        #TODO make date
+        data['date_s'] = meta.find(text="Announced:").parent.next_sibling
+
+        data['reporter'] = meta.find(text="Reporter:").parent.next_sibling
+
+        data['products'] = meta.find(
+                text="Products:"
+            ).parent.next_sibling.split(',')
+
+        data['fixed_in'] = []
+        fin = meta.find(text="Fixed in:")
+        # this gets the first sibling, on the same line
+        data['fixed_in'].append(fin.parent.next_sibling)
+        # this gets the rest of the siblings
+        for sibling in fin.parent.find_next_siblings():
+            for string in sibling.stripped_strings:
+                data['fixed_in'].append(string)
+
+        print data
+
 
