@@ -16,7 +16,8 @@ for link in advisories.find_all('a'):
         advisory = BeautifulSoup(open(filename))
         data = {}
 
-        data['headline'] = advisory.find('h1').get_text()
+        h1 = advisory.find('h1').get_text()
+        data['headline'] = h1.replace("\n", '').title()
         data['id'] = link.get_text().replace('MFSA ', '')
 
         meta = advisory.find('h1').find_next_sibling('p')
@@ -43,6 +44,9 @@ for link in advisories.find_all('a'):
                     for sibling in element.parent.find_next_siblings():
                         for string in sibling.stripped_strings:
                             data[value].append(string.strip())
+                elif "title" in value:
+                    contents = element.parent.next_sibling
+                    data[value] = contents.strip().replace("\n", '')
                 else:
                     data[value] = element.parent.next_sibling.strip()
 
